@@ -1,0 +1,1542 @@
+{
+  "info": {
+    "_postman_id": "b2d9f3c5-8e7e-4a06-b789-0c7268c73f5e",
+    "name": "Aeropuertos y Aerolíneas API",
+    "description": "API para la gestión de aeropuertos y aerolíneas, con operaciones CRUD y manejo de asociaciones entre entidades.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Aerolíneas",
+      "item": [
+        {
+          "name": "Obtener todas las aerolíneas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Number of airlines > 0', function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.length).to.be.greaterThan(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Obtener aerolínea por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Obtener aerolínea por ID inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Crear aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "pm.collectionVariables.set(\"aerolineaId\", jsonData.id);",
+                  "",
+                  "pm.test(\"Status code is 201\", function () {",
+                  "   pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/aerolineas",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Aerolínea Example\",\n    \"descripcion\": \"This is a sample airline description\",\n    \"pagina_web\": \"www.airline-example.com\",\n    \"fecha_fundacion\": \"1990-01-01T00:00:00.000Z\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nombre\": \"Aerolínea Example\",\n    \"descripcion\": \"This is a sample airline description\",\n    \"pagina_web\": \"www.airline-example.com\",\n    \"fecha_fundacion\": \"1990-01-01T00:00:00.000Z\"\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201
+            }
+          ]
+        },
+        {
+          "name": "Crear aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "   pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/aerolineas",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"descripcion\": \"Missing required nombre field\",\n    \"pagina_web\": \"www.invalid-airline.com\",\n    \"fecha_fundacion\": \"2023-01-01T00:00:00.000Z\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "400 Bad Request",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"descripcion\": \"Missing required nombre field\",\n    \"pagina_web\": \"www.invalid-airline.com\",\n    \"fecha_fundacion\": \"2023-01-01T00:00:00.000Z\"\n}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400
+            }
+          ]
+        },
+        {
+          "name": "Actualizar aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has updated data\", function () {",
+                  "   var jsonData = pm.response.json();",
+                  "   pm.expect(jsonData.nombre).to.eql(\"Aerolínea Updated\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Aerolínea Updated\",\n    \"descripcion\": \"This is an updated airline description\",\n    \"pagina_web\": \"www.airline-updated.com\",\n    \"fecha_fundacion\": \"1990-01-01T00:00:00.000Z\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nombre\": \"Aerolínea Updated\",\n    \"descripcion\": \"This is an updated airline description\",\n    \"pagina_web\": \"www.airline-updated.com\",\n    \"fecha_fundacion\": \"1990-01-01T00:00:00.000Z\"\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Actualizar aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Aerolínea Invalid\",\n    \"descripcion\": \"This is an invalid airline update\",\n    \"pagina_web\": \"www.airline-invalid.com\",\n    \"fecha_fundacion\": \"1990-01-01T00:00:00.000Z\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nombre\": \"Aerolínea Invalid\",\n    \"descripcion\": \"This is an invalid airline update\",\n    \"pagina_web\": \"www.airline-invalid.com\",\n    \"fecha_fundacion\": \"1990-01-01T00:00:00.000Z\"\n}"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "   pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}"
+                }
+              },
+              "status": "No Content",
+              "code": 204
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Aeropuertos",
+      "item": [
+        {
+          "name": "Obtener todos los aeropuertos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Number of airports > 0', function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.length).to.be.greaterThan(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Obtener aeropuerto por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Obtener aeropuerto por ID inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"El aeropuerto con el id proporcionado no fue encontrado\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos/00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Crear aeropuerto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "pm.collectionVariables.set(\"aeropuertoId\", jsonData.id);",
+                  "",
+                  "pm.test(\"Status code is 201\", function () {",
+                  "   pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Aeropuerto Example\",\n    \"codigo\": \"AEX\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Bogotá\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nombre\": \"Aeropuerto Example\",\n    \"codigo\": \"AEX\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Bogotá\"\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201
+            }
+          ]
+        },
+        {
+          "name": "Crear aeropuerto inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "   pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Aeropuerto Inválido\",\n    \"codigo\": \"INVALID\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Bogotá\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "400 Bad Request",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nombre\": \"Aeropuerto Inválido\",\n    \"codigo\": \"INVALID\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Bogotá\"\n}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400
+            }
+          ]
+        },
+        {
+          "name": "Actualizar aeropuerto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has updated data\", function () {",
+                  "   var jsonData = pm.response.json();",
+                  "   pm.expect(jsonData.nombre).to.eql(\"Aeropuerto Updated\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos", "{{aeropuertoId}}"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Aeropuerto Updated\",\n    \"codigo\": \"AUP\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Medellín\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos/{{aeropuertoId}}"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nombre\": \"Aeropuerto Updated\",\n    \"codigo\": \"AUP\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Medellín\"\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Actualizar aeropuerto inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"El aeropuerto con el id proporcionado no fue encontrado\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos", "00000000-0000-0000-0000-000000000000"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Aeropuerto Invalid\",\n    \"codigo\": \"AIV\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Cartagena\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos/00000000-0000-0000-0000-000000000000"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"nombre\": \"Aeropuerto Invalid\",\n    \"codigo\": \"AIV\",\n    \"pais\": \"Colombia\",\n    \"ciudad\": \"Cartagena\"\n}"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aeropuerto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "   pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "No Content",
+              "code": 204
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aeropuerto inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"El aeropuerto con el id proporcionado no fue encontrado\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aeropuertos/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aeropuertos", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aeropuertos/00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Aeropuertos-Aerolíneas",
+      "item": [
+        {
+          "name": "Agregar aeropuerto a aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has associated airport\", function () {",
+                  "   var jsonData = pm.response.json();",
+                  "   var hasAirport = jsonData.aeropuertos.some(function(airport) {",
+                  "       return airport.id === pm.collectionVariables.get(\"aeropuertoId\");",
+                  "   });",
+                  "   pm.expect(hasAirport).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Agregar aeropuerto inválido a aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"El aeropuerto con el id proporcionado no fue encontrado\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Agregar aeropuerto a aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000", "aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Obtener todos los aeropuertos de una aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has airports array\", function () {",
+                  "   var jsonData = pm.response.json();",
+                  "   pm.expect(jsonData).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Obtener todos los aeropuertos de una aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000", "aeropuertos"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Obtener aeropuerto específico de una aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has correct airport data\", function () {",
+                  "   var jsonData = pm.response.json();",
+                  "   pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"aeropuertoId\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Obtener aeropuerto inválido de una aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"El aeropuerto con el id proporcionado no fue encontrado\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Obtener aeropuerto de una aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000", "aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Actualizar aeropuertos de una aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "   pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has updated airports array\", function () {",
+                  "   var jsonData = pm.response.json();",
+                  "   pm.expect(jsonData.aeropuertos).to.be.an('array');",
+                  "   pm.expect(jsonData.aeropuertos.length).to.be.greaterThan(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n    {\n        \"id\": \"{{aeropuertoId}}\",\n        \"nombre\": \"Aeropuerto Example\",\n        \"codigo\": \"AEX\",\n        \"pais\": \"Colombia\",\n        \"ciudad\": \"Bogotá\"\n    }\n]"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n    {\n        \"id\": \"{{aeropuertoId}}\",\n        \"nombre\": \"Aeropuerto Example\",\n        \"codigo\": \"AEX\",\n        \"pais\": \"Colombia\",\n        \"ciudad\": \"Bogotá\"\n    }\n]"
+                }
+              },
+              "status": "OK",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Actualizar aeropuertos con datos inválidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n    {\n        \"id\": \"00000000-0000-0000-0000-000000000000\",\n        \"nombre\": \"Aeropuerto Inválido\",\n        \"codigo\": \"AIV\",\n        \"pais\": \"Colombia\",\n        \"ciudad\": \"Bogotá\"\n    }\n]"
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n    {\n        \"id\": \"00000000-0000-0000-0000-000000000000\",\n        \"nombre\": \"Aeropuerto Inválido\",\n        \"codigo\": \"AIV\",\n        \"pais\": \"Colombia\",\n        \"ciudad\": \"Bogotá\"\n    }\n]"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Actualizar aeropuertos de aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000", "aeropuertos"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n    {\n        \"id\": \"{{aeropuertoId}}\",\n        \"nombre\": \"Aeropuerto Example\",\n        \"codigo\": \"AEX\",\n        \"pais\": \"Colombia\",\n        \"ciudad\": \"Bogotá\"\n    }\n]"
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n    {\n        \"id\": \"{{aeropuertoId}}\",\n        \"nombre\": \"Aeropuerto Example\",\n        \"codigo\": \"AEX\",\n        \"pais\": \"Colombia\",\n        \"ciudad\": \"Bogotá\"\n    }\n]"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aeropuerto de una aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "   pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "No Content",
+              "code": 204
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aeropuerto inválido de aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"El aeropuerto con el id proporcionado no fue encontrado\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/00000000-0000-0000-0000-000000000000",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aeropuerto de aerolínea inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "   pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"La aerolínea con el id proporcionado no fue encontrada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "00000000-0000-0000-0000-000000000000", "aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "404 Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/00000000-0000-0000-0000-000000000000/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "Not Found",
+              "code": 404
+            }
+          ]
+        },
+        {
+          "name": "Eliminar aeropuerto que no existe en aerolínea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 412\", function () {",
+                  "   pm.response.to.have.status(412);",
+                  "});",
+                  "",
+                  "pm.test(\"Get expected error message\", function () {",
+                  "   var data = pm.response.json();",
+                  "   pm.expect(data.message).to.eql(\"El aeropuerto con el id proporcionado no está asociado a la aerolínea\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}",
+              "host": ["{{base_url}}"],
+              "path": ["aerolineas", "{{aerolineaId}}", "aeropuertos", "{{aeropuertoId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "412 Precondition Failed",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/aerolineas/{{aerolineaId}}/aeropuertos/{{aeropuertoId}}"
+                }
+              },
+              "status": "Precondition Failed",
+              "code": 412
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "aerolineaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "aeropuertoId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
